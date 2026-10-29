@@ -20,6 +20,32 @@ const MAX_LIMIT = 100;
 //   - data memuat kantinId yang ter-populate (objek Kantin)
 exports.getAll = async (req, res) => {
   // TODO B1
+   const filter = {};
+  if (req.query.kantinId) {
+    filter.kantinId = req.query.kantinId;
+  }
+
+  // 2. Kalkulasi Pagination (Perbaikan Math.min)
+  const page = Math.max(parseInt(req.query.page) || 1, 1);
+  const limit = Math.min(parseInt(req.query.limit) || 10, MAX_LIMIT);
+  
+  // 3. Konfigurasi Sorting & Proyeksi Kolom (Default sorting: createdAt)
+  const sortField = req.query.sort || 'createdAt';
+  const projection = req.query.fields ? req.query.fields.split(",").join(" ") : "";
+  
+  // 4. Eksekusi Query (Tanpa try/catch karena didukung express-async-errors secara global)
+  const data = await Menu.find(filter)
+      .populate("kantinId") // Mengisi objek informasi kantin secara utuh
+      .select(projection)
+      .sort(sortField)     // Mongoose otomatis membaca string spasi/minus untuk sorting
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+  // 5. Hitung total data yang lolos filter (Bukan total seluruh koleksi)
+  const total = await Menu.countDocuments(filter);
+
+  // 6. Mengirimkan response sukses 200
+  res.status(200).json({ data, page, limit, total });
 };
 
 // GET /menu/:id

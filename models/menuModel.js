@@ -15,10 +15,78 @@
 // Petunjuk: lihat models/kantinModel.js sebagai contoh sintaks dasar,
 // dan materi Pertemuan 9-10 (embedding vs referencing).
 
+// TODO A1: buat schema subdocument gizi
+const giziSchema = new mongoose.Schema({
+  kalori: {
+    type: Number,
+    required: [true],
+    min: [0],
+    max: [5000]
+  },
+  protein: {
+    type: Number,
+    default: 0,
+    min: [0]
+  }
+}, { _id: false });
+
 const mongoose = require("mongoose");
 
-// TODO A1: buat schema subdocument gizi
 // TODO A2: buat menuSchema
+const menuSchema = new mongoose.Schema({
+    nama: { 
+        type: String, 
+        required: true
+    },
+
+    kode: {
+        type: String,
+        required: [true],
+        unique: true, 
+        match: [/^MN-\d{6}$/]
+    },
+
+    bahan:{ 
+        type: [String],
+        validate: {
+            validator: function(v) {
+                return Array.isArray(v) && v.length > 0;
+            },
+        }, 
+        required: true
+    },
+
+    gizi: { 
+        type: giziSchema,
+        required: true
+    },
+
+    harga: {
+        type: Number,
+        required: true,
+        min: [0]
+    },
+
+    kantinId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'kantinModel.js', 
+        required: [true]
+    },
+
+    tersedia: {
+        type: Boolean,
+        default: true
+    },
+
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+
+
+})
+
+
 // TODO A3: export model dengan nama "Menu"
 
-module.exports = {};
+module.exports = mongoose.model('Menu', menuSchema);

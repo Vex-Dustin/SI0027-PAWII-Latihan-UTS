@@ -89,7 +89,7 @@ Semua respons error berbentuk `{ "message": "..." }`.
 
 Cari komentar `TODO` di source code. Bagian lain sudah tersedia lengkap.
 
-- [ ] **A. Model** - `models/menuModel.js` (schema Menu, embedded & referencing, validasi)
+- [ Selesai ] **A. Model** - `models/menuModel.js` (schema Menu, embedded & referencing, validasi)
 - [ ] **B. Controller Menu** - `controllers/menuController.js` (`getAll`, `getById`, `create`, `update`, `remove`)
 - [ ] **C. Routing** - `routes/menuRoutes.js` dan pendaftaran route pada `app.js`
 - [ ] **D. Error handling terpusat** - `middlewares/errorHandler.js` dan pendaftarannya pada `app.js`
